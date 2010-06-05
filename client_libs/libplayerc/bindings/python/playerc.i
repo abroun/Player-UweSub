@@ -375,6 +375,11 @@
   $result = PyBuffer_FromMemory((void*)$1,sizeof(uint8_t)*$1_dim0);
 }
 
+%typemap(out) uint8_t *image
+{
+  $result = PyBuffer_FromMemory((void*)$1,arg1->image_count);
+}
+
 // Provide array access doubly-dimensioned arrays
 %typemap(out) double [ANY][ANY]
 {

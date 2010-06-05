@@ -463,6 +463,9 @@ int SerialStream::ChangeTermSpeed(int speed)
 	case 38400:
 		term_speed = B38400;
 		break;
+    case 57600:
+        term_speed = B57600;
+        break;
 	case 115200:
 		term_speed = B115200;
 		break;
@@ -480,6 +483,7 @@ int SerialStream::ChangeTermSpeed(int speed)
     case B9600:
     case B19200:
     case B38400:
+    case B57600:
     case B115200:
 #ifdef B500000
     case B500000:

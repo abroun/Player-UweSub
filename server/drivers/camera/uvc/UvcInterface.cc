@@ -181,7 +181,7 @@ int UvcInterface::Close(void)
 int UvcInterface::Read()
 {
 	int ret=0;
-	const int hdr=0xaf;
+	//const int hdr=0xaf;
 
 	try
 	{
@@ -203,10 +203,13 @@ int UvcInterface::Read()
 	    if(ret==-1)
 			throw "Unable to dequeue frame";
 
-		memcpy(frame,buffer[buf.index],hdr);
-		memcpy(frame+hdr,dht_data,dht_size);
-		memcpy(frame+hdr+dht_size,buffer[buf.index]+hdr,(buf.bytesused-hdr));
-		frameSize=buf.bytesused+dht_size;
+        memcpy(frame,buffer[buf.index],buf.bytesused);
+        frameSize=buf.bytesused;
+        
+		//memcpy(frame,buffer[buf.index],hdr);
+		//memcpy(frame+hdr,dht_data,dht_size);
+        //memcpy(frame+hdr+dht_size,buffer[buf.index]+hdr,(buf.bytesused-hdr));
+		//frameSize=buf.bytesused+dht_size;
 
 		ret=ioctl(fd,VIDIOC_QBUF,&buf);
 		if(ret==-1)
