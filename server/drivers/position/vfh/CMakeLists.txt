@@ -1,0 +1,6 @@
+IF (HAVE_STL)
+    PLAYERDRIVER_OPTION (vfh build_vfh ON)
+ELSE (HAVE_STL)
+    PLAYERDRIVER_OPTION (vfh build_vfh OFF "STL not found.")
+ENDIF (HAVE_STL)
+PLAYERDRIVER_ADD_DRIVER (vfh build_vfh SOURCES vfh.cc vfh_algorithm.cc)

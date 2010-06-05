@@ -1,0 +1,109 @@
+The Player build system uses CMake (http://cmake.org/HTML/index.html). There
+are two ways of conducting a CMake-based build: in-source builds and
+out-of-source builds. An out-of-source build is the preferred option.
+
+Out-of-source Build
+===================
+
+Create a directory anywhere you have permission. Typically, a subdirectory of
+the source directory is used:
+
+$ cd player/
+$ mkdir build
+$ cd build/
+
+This directory will be the destination for the generated build scripts, any
+files generated during the build process, the compiled objects, as well as
+executables and libraries before they are installed.
+
+Once in your chosen build location, you have a choice of two ways to exectute
+CMake and generate the build scripts for your build system (such as make,
+KDevelop, mingw, Microsoft Visual Studio, etc):
+
+1) Use the command-line cmake:
+
+$ cmake ../
+
+The configure process will run, with the checks being performed and the result
+of the configuration, including which drivers and client libraries will be
+built, printed to standard out.
+
+Configuration options can be changed using the -D command line option. Run
+"cmake --help" for details. A full list of configuration options for Player is
+given below.
+
+2) Use the ncurses-based (for Unix-like systems) or graphical (for Windows) UI:
+
+$ ccmake ../
+
+This is the preferred option if you need to change a configuration variable,
+as it is much easier.
+
+The first time the UI runs, you will need to press 'c' to perform the initial
+configuration pass. After this, configurable variables will be displayed.
+To change a value, select it and press "enter," followed by entering the new
+value and pressing "enter" again. Press 'c' to reconfigure after changing the
+variables to meet your needs. New variables may appear after each configure
+pass.
+
+In the UI, you can also press 't' to switch to advanced mode. This will display
+a larger number of configuration options. Most will correspond to internal
+CMake variables, but some may correspond to advanced Player options.
+
+Once all variables have been set to your satisfaction, continue pressing 'c'
+until the generate option becomes available at the bottom of the screen. This
+indicates that CMake is ready to generate the build scripts, so press 'g' to
+tell it to do so.
+
+You are now ready to compile and install Player. How you do this will depend
+on the build system you have chosen to use. The example below is for Unix
+Makefiles.
+
+$ make
+$ make install
+
+If errors occur during the build process and you want more information on the
+build steps performed (this is particularly important if you are seeking help
+from the mailing list), perform a verbose make:
+
+$ VERBOSE=1 make
+
+
+In-source Build
+===============
+
+An in-source build is not recommended, as it pollutes the source tree with the
+generated build scripts and makes completely removing all generated scripts
+difficult.
+
+The steps to perform an in-source build are, for the most part, the same as for
+an out-of-source build. Instead of creating a new directory, simply change to
+the source directory and run cmake (or ccmake):
+
+$ cd player/
+$ cmake .
+$ make install
+
+If errors occur during the build process and you want more information on the
+build steps performed (this is particularly important if you are seeking help
+from the mailing list), perform a verbose make:
+
+$ VERBOSE=1 make
+
+
+Configuration Options
+=====================
+
+General CMake options
+---------------------
+
+CMAKE_BUILD_TYPE - Type of build to perform. Valid values are Debug, Release,
+    MinSizeRel and RelWithDebInfo.
+CMAKE_INSTALL_PREFIX - The directory to install Player into.
+
+
+Player specific
+---------------
+
+Run ccmake. Each option is documented.
+
