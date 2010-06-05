@@ -3653,6 +3653,62 @@ PLAYERC_EXPORT int playerc_wsn_datafreq(playerc_wsn_t *device, int node_id, int 
 /** @} */
 /***************************************************************************/
 
+/**************************************************************************/
+/** @ingroup playerc_proxies
+ * @defgroup playerc_proxy_speech speech
+
+The speech proxy provides an interface to a speech synthesis system.
+
+@{
+*/
+
+/** Micron Sonar proxy data. */
+typedef struct
+{
+  /** Device info; must be at the start of all device structures. */
+  playerc_device_t info;
+  
+  /** Image dimensions (pixels). */
+  int width, height;
+
+  /** Image bits-per-pixel (8, 16). */
+  int bpp;
+
+  /** Image format (e.g., MONO8). */
+  int format;
+
+  /** Size of image data (bytes) */
+  int image_count;
+
+  /** Image data (byte aligned, row major order).  Multi-byte image
+      formats (such as MONO16) are automatically converted to the
+      correct host byte ordering.
+  */
+  uint8_t *image;
+
+} playerc_micronsonar_t;
+
+
+/** Create a micron sonar proxy. */
+PLAYERC_EXPORT playerc_micronsonar_t *playerc_micronsonar_create(playerc_client_t *client, int index);
+
+/** Destroy a micron sonar proxy. */
+PLAYERC_EXPORT void playerc_micronsonar_destroy(playerc_micronsonar_t *device);
+
+/** Subscribe to the micron sonar device. */
+PLAYERC_EXPORT int playerc_micronsonar_subscribe(playerc_micronsonar_t *device, int access);
+
+/** Un-subscribe from the micron sonar device. */
+PLAYERC_EXPORT int playerc_micronsonar_unsubscribe(playerc_micronsonar_t *device);
+
+/** Set the output for the micron sonar device. */
+PLAYERC_EXPORT int playerc_micronsonar_say (playerc_micronsonar_t *device, char *);
+
+
+/** @} */
+/***************************************************************************/
+
+
 #ifdef __cplusplus
 }
 #endif

@@ -37,6 +37,7 @@ SET (playercSrcs    playerc.h
                     dev_localize.c
                     dev_log.c
                     dev_map.c
+                    dev_micronsonar.c
                     dev_opaque.c
                     dev_planner.c
                     dev_pointcloud3d.c
