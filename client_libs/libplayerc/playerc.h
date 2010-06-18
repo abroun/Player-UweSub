@@ -3685,6 +3685,27 @@ typedef struct
       correct host byte ordering.
   */
   uint8_t *image;
+  
+  /** X coordinate of the images centre point [pixels]. */
+  uint32_t centreX;
+  
+  /** Y coordinate of the images centre point [pixels]. */
+  uint32_t centreY;
+  
+  /** The range of the sonar scan (metres) */
+  int range;
+  
+  /** The number of bins (pixels) that make up each ray of length 'range' */
+  int numBins;
+  
+  /** The angle at which the scan begins (in radians) */
+  float startAngle;
+  
+  /** The angle at which the scan ends (in radians) */
+  float endAngle;
+  
+  /** The gain of the sonar (0.0 to 1.0) */
+  float gain;
 
 } playerc_micronsonar_t;
 
@@ -3702,8 +3723,55 @@ PLAYERC_EXPORT int playerc_micronsonar_subscribe(playerc_micronsonar_t *device, 
 PLAYERC_EXPORT int playerc_micronsonar_unsubscribe(playerc_micronsonar_t *device);
 
 /** Set the output for the micron sonar device. */
-PLAYERC_EXPORT int playerc_micronsonar_say (playerc_micronsonar_t *device, char *);
+PLAYERC_EXPORT int playerc_micronsonar_say(playerc_micronsonar_t *device, char *);
 
+/** Starts a scan 
+
+@param device Pointer to proxy object.
+
+@param startAngle The angle at which the scan begins (in radians)
+  
+@param endAngle The angle at which the scan ends (in radians)
+  
+@returns Returns 0 on success, non-zero otherwise.  Use
+playerc_error_str() to get a descriptive error message.
+
+*/
+PLAYERC_EXPORT int playerc_micronsonar_scan(playerc_micronsonar_t *device, double startAngle, double endAngle);
+
+/** @brief Configure the micron sonar.
+
+@param device Pointer to proxy object.
+
+@param range The range of the sonar (in metres) 
+  
+@param numBins The number of bins (pixels) that make up each ray of length 'range'
+  
+@param gain The gain of the sonar (0.0 to 1.0) 
+  
+@returns Returns 0 on success, non-zero otherwise.  Use
+playerc_error_str() to get a descriptive error message.
+
+*/
+PLAYERC_EXPORT int playerc_micronsonar_set_config( playerc_micronsonar_t *device,
+                             int range, int numBins, double gain );
+
+/** @brief Get the micron sonar configuration.
+
+@param device Pointer to proxy object.
+
+@param range The range of the sonar (in metres) 
+  
+@param numBins The number of bins (pixels) that make up each ray of length 'range'
+  
+@param gain The gain of the sonar (0.0 to 1.0) 
+
+@returns Returns 0 on success, non-zero otherwise.  Use
+playerc_error_str() to get a descriptive error message.
+
+*/
+PLAYERC_EXPORT int playerc_micronsonar_get_config( playerc_micronsonar_t *device,
+                             int* range, int* numBins, double* gain );
 
 /** @} */
 /***************************************************************************/

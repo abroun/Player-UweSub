@@ -8,14 +8,21 @@ returns the scan produced by the sonar as a byte-aligned array.
 message { DATA, STATE, 1, player_micronsonar_data_t };
 
 /** Command subtype: say a string - PLACEHOLDER */
-message { CMD, SAY, 1, player_micronsonar_cmd_t };
+message { CMD, SAY, 1, player_micronsonar_cmd_say_t };
+/** Command subtype: start a scan */
+message { CMD, SCAN, 2, player_micronsonar_cmd_scan_t };
+
+/** Request/reply: set configuration - get final configuration as a reply */
+message { REQ, SET_CONFIG, 1, player_micronsonar_config_t };
+/** Request/reply subtype: get configuration */
+message { REQ, GET_CONFIG, 2, player_micronsonar_config_t };
 
 /** Image format : 8-bit monochrome. */
 #define PLAYER_MICRONSONAR_FORMAT_MONO8  1
 /** Image format : 16-bit monochrome (network byte order). */
 #define PLAYER_MICRONSONAR_FORMAT_MONO16 2
 
-/** @brief Data: state (@ref PLAYER_CAMERA_DATA_STATE) */
+/** @brief Data: state (@ref PLAYER_MICRONSONAR_DATA_STATE) */
 typedef struct player_micronsonar_data
 {
   /** Image dimensions [pixels]. */
@@ -32,15 +39,48 @@ typedef struct player_micronsonar_data
       Multi-byte image formats (such as MONO16) must be converted
       to network byte ordering. */
   uint8_t *image;
+  /** X coordinate of the images centre point [pixels]. */
+  uint32_t centreX;
+  /** Y coordinate of the images centre point [pixels]. */
+  uint32_t centreY;
+  /** The range of the sonar scan (metres) */
+  int32_t range;
+  /** The number of bins (pixels) that make up each ray of length 'range' */
+  int32_t numBins;
+  /** The angle at which the scan begins (in radians) */
+  float startAngle;
+  /** The angle at which the scan ends (in radians) */
+  float endAngle;
 } player_micronsonar_data_t;
 
 /** @brief Command: say a string (@ref PLAYER_MICRONSONAR_CMD_SAY)
 
 This is a placeholder command until the required commands have been defined */
-typedef struct player_micronsonar_cmd
+typedef struct player_micronsonar_cmd_say
 {
   /** Length of string */
   uint32_t string_count;
   /** The string to say */
   char *string;
-} player_micronsonar_cmd_t;
+} player_micronsonar_cmd_say_t;
+
+/** @brief Command: Starts a scan (@ref PLAYER_MICRONSONAR_CMD_SCAN) */
+typedef struct player_micronsonar_cmd_scan
+{
+  /** The angle at which the scan begins (in radians) */
+  float startAngle;
+  /** The angle at which the scan ends (in radians) */
+  float endAngle;
+} player_micronsonar_cmd_scan_t;
+
+/** @brief Configuration data for the sonar  */
+typedef struct player_micronsonar_config
+{
+  /** Range of the sonar (in metres) */
+  int32_t range;
+  /** The number of bins (pixels) that make up each ray of length 'range' */
+  int32_t numBins;
+  /** The gain of the sonar (0.0 to 1.0) */
+  float gain;
+} player_micronsonar_config_t;
+

@@ -100,7 +100,13 @@ void playerc_micronsonar_putmsg(playerc_micronsonar_t *device, player_msghdr_t *
     device->format       = data->format;
     device->image_count  = data->image_count;
     device->image        = realloc(device->image, sizeof(device->image[0])*device->image_count);
-
+    device->centreX      = data->centreX;
+    device->centreY      = data->centreY;
+    device->range        = data->range;
+    device->numBins      = data->numBins;
+    device->startAngle   = data->startAngle;
+    device->endAngle     = data->endAngle;
+    
     if (device->image)
       memcpy(device->image, data->image, device->image_count);
     else
@@ -115,7 +121,7 @@ void playerc_micronsonar_putmsg(playerc_micronsonar_t *device, player_msghdr_t *
 /* Set the output for the micron sonar device. */
 int playerc_micronsonar_say(playerc_micronsonar_t *device, char *str)
 {
-  player_micronsonar_cmd_t cmd;
+  player_micronsonar_cmd_say_t cmd;
   
   memset(&cmd, 0, sizeof(cmd));
   cmd.string = str;
@@ -125,3 +131,65 @@ int playerc_micronsonar_say(playerc_micronsonar_t *device, char *str)
                   &device->info, PLAYER_MICRONSONAR_CMD_SAY, &cmd, NULL);
 }
 
+// Starts a scan
+int playerc_micronsonar_scan(playerc_micronsonar_t *device, double startAngle, double endAngle)
+{
+  player_micronsonar_cmd_scan_t cmd;
+  
+  memset(&cmd, 0, sizeof(cmd));
+  cmd.startAngle = startAngle;
+  cmd.endAngle = endAngle;
+    
+  return playerc_client_write(device->info.client, 
+                  &device->info, PLAYER_MICRONSONAR_CMD_SCAN, &cmd, NULL);
+}
+
+// Configure the micron sonar.
+int playerc_micronsonar_set_config( playerc_micronsonar_t *device,
+                             int range, int numBins, double gain )
+{
+  player_micronsonar_config_t config;
+
+  config.range = range;
+  config.numBins = numBins;
+  config.gain = gain;
+
+  if ( playerc_client_request( device->info.client, &device->info,
+    PLAYER_MICRONSONAR_REQ_SET_CONFIG, (void*)&config, NULL ) < 0 )
+  {
+    return -1;
+  }
+
+  // if the set suceeded copy them locally
+  device->range = config.range;
+  device->numBins = config.numBins;
+  device->gain = config.gain;
+
+  return 0;
+}
+
+// Get the configuration of the micron sonar.
+int playerc_micronsonar_get_config( playerc_micronsonar_t *device,
+                             int* range, int* numBins, double* gain )
+{
+  player_micronsonar_config_t* config = NULL;
+
+  if ( playerc_client_request( device->info.client, &device->info,
+    PLAYER_MICRONSONAR_REQ_GET_CONFIG, NULL, (void**)&config ) < 0 )
+  {
+    if ( NULL != config )
+    {
+      player_micronsonar_config_t_free( config );
+    }
+    return -1;
+  }
+
+  // if the get suceeded copy them locally
+  *range = device->range = config->range;
+  *numBins = device->numBins = config->numBins;
+  *gain = device->gain = config->gain;
+
+  player_micronsonar_config_t_free( config );
+  
+  return 0;
+}
