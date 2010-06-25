@@ -3776,6 +3776,48 @@ PLAYERC_EXPORT int playerc_micronsonar_get_config( playerc_micronsonar_t *device
 /** @} */
 /***************************************************************************/
 
+/** dspic proxy data. */
+typedef struct
+{
+  /** Device info; must be at the start of all device structures. */
+  playerc_device_t info;
+  
+  /** Message type. */
+  uint8_t msgtype;
+
+  /** Angular Speed-Acceleration (X-Y)  */
+  float reading;
+
+  /** Transducer index. */
+  int transducer;
+
+  /** Distance - valid in Active eho */
+  float distance;
+
+  /** Ping Intensity - Valid in Passive Echo*/
+  uint32_t intensity;
+  
+} playerc_dspic_t;
+
+
+/** Create a dspic proxy. */
+PLAYERC_EXPORT playerc_dspic_t* playerc_dspic_create(playerc_client_t *client, int index);
+
+/** Destroy a dspic proxy. */
+PLAYERC_EXPORT void playerc_dspic_destroy(playerc_dspic_t *device);
+
+/** Subscribe to the dspic device. */
+PLAYERC_EXPORT int playerc_dspic_subscribe(playerc_dspic_t *device, int access);
+
+/** Un-subscribe from the dspic device. */
+PLAYERC_EXPORT int playerc_dspic_unsubscribe(playerc_dspic_t *device);
+
+/** Set the output for the dspic device. */
+PLAYERC_EXPORT int playerc_dspic_say(playerc_dspic_t *device, char *);
+
+
+/** @} */
+/***************************************************************************/
 
 #ifdef __cplusplus
 }

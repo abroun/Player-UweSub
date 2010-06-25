@@ -1,0 +1,45 @@
+description { 
+@dsPIC comm interface
+
+This interface controls a dsPIC30F4011 programmed to provide active/passive echo transducer data
+and analog readings from a gyro and an accelerometer.
+}
+
+message { DATA, STATE, 1, player_dspic_data_t };
+
+/** Command subtype: say a string - PLACEHOLDER */
+message { CMD, SAY, 1, player_dspic_cmd_say_t };
+
+
+
+/** @brief Data: state (@ref PLAYER_DSPIC_DATA_STATE) */
+typedef struct player_dspic_data
+{
+  /** Data type - Gyro reading, Acceleration in X, Acceleration in Y, Active-Passive Echo on TD #0 or #1  */
+  uint8_t msgtype;
+  /** Analog reading converted into meters per sec^2 or degrees per sec */
+  float reading;
+  
+  /** index of transducer (0 or 1) - if data concerns a sonar echo */ 
+  uint8_t transducer;  
+
+  /** Distance of "loudest" object in beam - if data concerns an active echo*/
+  float distance;
+
+  
+  /** intensity of noise in the beam - Valid only in passive echo  */
+  uint32_t intensity;
+
+} player_dspic_data_t;
+
+/** @brief Command: say a string (@ref PLAYER_DSPIC_CMD_SAY)
+
+This is a placeholder command until the required commands have been defined */
+typedef struct player_dspic_cmd_say
+{
+  /** Length of string - should be always 3 */
+  uint32_t string_count;
+  /** The string to say */
+  char *string;
+} player_dspic_cmd_say_t;
+
